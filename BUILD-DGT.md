@@ -1,4 +1,4 @@
-![Sawtooth=BGX](bgx/images/logo-bgx.png)
+![Sawtooth=DGT](bgx/images/dgt-logo.png)
 
 Hyperledger DGT SDK
 -------------
