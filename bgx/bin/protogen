@@ -59,6 +59,13 @@ def main(args=None):
     # Generate Smart BGT token  protos
     proto_dir = JOIN(TOP_DIR, "protos/families/dgt_coin")
     protoc(proto_dir, "families/dgt_python", "dgt_common/protobuf")
+
+    proto_dir = JOIN(TOP_DIR, "protos/families/settings/protos")
+    protoc(proto_dir, "bgx/cli", "bgx_cli/protobuf")
+
+    proto_dir = JOIN(TOP_DIR, "protos/families/identity/protos")
+    protoc(proto_dir, "bgx/cli", "bgx_cli/protobuf")
+
     # Smart STUFF token protos
     #proto_dir = JOIN(TOP_DIR, "bgx/protos/families/smart_stuff")
     #protoc(proto_dir, "bgx/families/smart_stuff", "stuff_common/protobuf")
