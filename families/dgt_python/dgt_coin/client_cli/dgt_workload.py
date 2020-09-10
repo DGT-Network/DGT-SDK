@@ -24,10 +24,10 @@ import getpass
 from base64 import b64encode
 
 import requests
-from sawtooth_signing import create_context
-from sawtooth_signing import CryptoFactory
-from sawtooth_signing import ParseError
-from sawtooth_signing.secp256k1 import Secp256k1PrivateKey
+from dgt_signing import create_context
+from dgt_signing import CryptoFactory
+from dgt_signing import ParseError
+from dgt_signing.secp256k1 import Secp256k1PrivateKey
 from dgt_coin.client_cli.workload.workload_generator import WorkloadGenerator
 from dgt_coin.client_cli.workload.dgt_workload import Workload
 from dgt_coin.client_cli.create_batch import create_dgt_transaction
