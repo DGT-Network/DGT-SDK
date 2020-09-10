@@ -19,9 +19,9 @@ import cbor
 import json
 
 
-from sawtooth_sdk.processor.handler import TransactionHandler
-from sawtooth_sdk.processor.exceptions import InvalidTransaction
-from sawtooth_sdk.processor.exceptions import InternalError
+from dgt_sdk.processor.handler import TransactionHandler
+from dgt_sdk.processor.exceptions import InvalidTransaction
+from dgt_sdk.processor.exceptions import InternalError
 from smart_bgt.processor.utils  import FAMILY_NAME,FAMILY_VER,make_smart_bgt_address,SMART_BGT_ADDRESS_PREFIX
 from smart_bgt.processor.services import BGXlistener
 from smart_bgt.processor.services import BGXwallet

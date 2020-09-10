@@ -43,70 +43,18 @@ def main(args=None):
     # Generate and distribute top-level protos
     proto_dir = JOIN(TOP_DIR, "protos")
     print('protogen TOP_DIR=',TOP_DIR)
-    #protoc(proto_dir, "sdk/python", "sawtooth_sdk/protobuf")
-    #protoc(proto_dir, "cli", "sawtooth_cli/protobuf")
-    #protoc(proto_dir, "validator", "sawtooth_validator/protobuf")
-    #protoc(proto_dir, "rest_api", "sawtooth_rest_api/protobuf")
-    # BGX version
+    # DGT version
     # Generate common protos for new validator - can change some proto from /protos
     proto_dir = JOIN(TOP_DIR, "bgx/protos/common")
-    #protoc(proto_dir, "sdk/python", "sawtooth_sdk/protobuf")
     protoc(proto_dir, "sdk/python", "dgt_sdk/protobuf")
     protoc(proto_dir, "bgx/cli", "bgx_cli/protobuf")
-    #protoc(proto_dir, "cli", "sawtooth_cli/protobuf")
-    # for bgx-rest-api
+    # for dgt-rest-api
     protoc(proto_dir, "rest-api", "dgt_rest_api/protobuf")
-    # for bgx-dashboard
+    # for dgt-dashboard
     protoc(proto_dir, "bgx/dashboard", "sawtooth_rest_api/protobuf")
-
-    protoc(proto_dir, "families/settings", "sawtooth_settings/protobuf")
     protoc(proto_dir, "bgx/families/settings", "bgx_settings/protobuf")
     protoc(proto_dir, "families/identity", "sawtooth_identity/protobuf")
     protoc(proto_dir, "families/block_info", "sawtooth_block_info/protobuf")
-
-    # Generate config protos
-    proto_dir = JOIN(TOP_DIR, "families/settings/protos")
-    protoc(proto_dir, "families/settings", "sawtooth_settings/protobuf")
-    #protoc(proto_dir, "cli", "sawtooth_cli/protobuf")
-    
-
-    # Generate config protos bgx setting
-    proto_dir = JOIN(TOP_DIR, "bgx/families/settings/protos")
-    protoc(proto_dir, "bgx/families/settings", "bgx_settings/protobuf")
-    protoc(proto_dir, "bgx/cli", "bgx_cli/protobuf")
-    #protoc(proto_dir, "bgx/validator-bgx", "sawtooth_validator/protobuf")
-    #protoc(proto_dir, "bgx/consensus/bgx_pbft", "bgx_pbft_common/protobuf")
-    
-
-    # Generate identity protos
-    proto_dir = JOIN(TOP_DIR, "families/identity/protos")
-    protoc(proto_dir, "families/identity", "sawtooth_identity/protobuf")
-    #protoc(proto_dir, "cli", "sawtooth_cli/protobuf")
-    protoc(proto_dir, "bgx/cli", "bgx_cli/protobuf")
-
-    # Generate block info protos
-    proto_dir = JOIN(TOP_DIR, "families/block_info/protos")
-    protoc(proto_dir, "families/block_info", "sawtooth_block_info/protobuf")
-
-    # Generate dev-mode python engine  protos
-    #proto_dir = JOIN(TOP_DIR, "bgx/protos/devmode")
-    #protoc(proto_dir, "bgx/consensus/devmode_python", "sawtooth_bgt_common/protobuf")
-
-    # Generate PBFT python engine  protos
-    #proto_dir = JOIN(TOP_DIR, "bgx/protos/pbft")
-    #protoc(proto_dir, "bgx/consensus/pbft_python", "bgx_pbft_common/protobuf")
-    #protoc(proto_dir, "bgx/consensus/devmode_python", "sawtooth_bgt_common/protobuf")
-    #protoc(proto_dir, "bgx/consensus/bgx_pbft", "bgx_pbft_common/protobuf")
-    #protoc(proto_dir, "bgx/validator-bgx", "sawtooth_validator/protobuf")
-
-    # Generate common protos for new validator - can change some proto from /protos
-    #proto_dir = JOIN(TOP_DIR, "bgx/protos/common")
-    #protoc(proto_dir, "sdk/python", "dgt_sdk/protobuf")
-    #protoc(proto_dir, "cli", "sawtooth_cli/protobuf")
-    #protoc(proto_dir, "bgx/cli", "bgx_cli/protobuf")
-    #protoc(proto_dir, "rest-api", "sawtooth_rest_api/protobuf")
-    #protoc(proto_dir, "bgx/dashboard", "sawtooth_rest_api/protobuf")
-    
     
     # Generate Smart BGT token  protos
     proto_dir = JOIN(TOP_DIR, "protos/families/dgt_coin")

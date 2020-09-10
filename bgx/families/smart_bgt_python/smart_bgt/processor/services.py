@@ -20,7 +20,7 @@ import logging
 import sys
 import json
 from web3 import Web3, HTTPProvider
-from sawtooth_sdk.processor.exceptions import InternalError
+from dgt_sdk.processor.exceptions import InternalError
 from smart_bgt.processor.token import Token
 
 LOGGER = logging.getLogger(__name__)

@@ -17,7 +17,7 @@ import cbor
 
 from sawtooth_processor_test.transaction_processor_test_case import TransactionProcessorTestCase
 from smart_bgt.smart_bgt_message_factory import SmartBgtMessageFactory
-from sawtooth_sdk.protobuf.validator_pb2 import Message
+from dgt_sdk.protobuf.validator_pb2 import Message
 
 
 VALID_VERBS = 'set', 'inc', 'dec'

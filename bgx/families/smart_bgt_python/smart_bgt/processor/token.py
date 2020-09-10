@@ -6,7 +6,7 @@ import json
 import logging
 
 from smart_bgt.processor.utils  import SMART_BGT_CREATOR_KEY
-from sawtooth_sdk.processor.exceptions import InternalError
+from dgt_sdk.processor.exceptions import InternalError
 
 LOGGER = logging.getLogger(__name__)
 
