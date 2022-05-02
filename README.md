@@ -2,6 +2,7 @@
 
 DGT SDK
 -------------
+Hello! :raised_hand_with_fingers_splayed:
 
 DGT SDK is a Layer 1 platform for building, deploying, and
 running distributed ledgers (also called blockchains). It provides an extremely
