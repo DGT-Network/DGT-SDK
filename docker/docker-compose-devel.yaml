@@ -1,0 +1,60 @@
+# Copyright 2020 DGT NETWORK INC © Stanislav Parsov
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# FOR DGT DEC with DAG 
+# this is for cluster version - we have separate folder for cluster's peers
+version: '3.6'
+
+services:
+  python-sdk:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile-${DISTR}
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+        - DGT_TOP=${DGT_TOP}
+    image: ${PNM}-common-${DISTR}:${ISOLATION_ID}
+    networks:
+    - network1
+    environment:
+    - DGT_HOME=/project/${DGT_TOP}/clusters/${C}/${PNM}${N}
+    - PEER_HOME=/project/peer
+    - CRYPTO_BACK=${CRYPTO_BACK}
+    - DGT_TOP=${DGT_TOP}
+    - HTTPS_MODE=${HTTPS_MODE}
+    volumes:
+      - ..:/project/${DGT_TOP}
+      - ../../${PNM}_devel/python_test:/project/peer
+    container_name: python-sdk-${PNM}
+    command: |
+      bash -c "
+        dgt keygen --force ;ls -l /root/.dgt/keys &&
+        tail -f /dev/null
+      "
+    stop_signal: SIGKILL
+
+
+
+networks:
+  network1:
+     #external: true
+     name: ${PNM}1-network
+#name: ${PNM}${N}-network
+#        driver: default
+#        config:
+#          - subnet: "172.16.32.0/24"
+          
+  
