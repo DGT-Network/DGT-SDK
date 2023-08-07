@@ -1,4 +1,4 @@
-# Copyright 2020 NTRLab
+# Copyright DGT NETWORK INC © Stanislav Parsov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ import hashlib
 import string
 import random
 
-from sawtooth_signing import create_context
-from sawtooth_signing import CryptoFactory
+from dgt_signing import create_context
+from dgt_signing import CryptoFactory
 
 from dgt_sdk.protobuf.processor_pb2 import TpRegisterRequest
 from dgt_sdk.protobuf.processor_pb2 import TpProcessResponse

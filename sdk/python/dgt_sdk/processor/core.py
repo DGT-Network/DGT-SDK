@@ -1,4 +1,4 @@
-# Copyright 2019 NTRLab
+# Copyright 2016 DGT NETWORK INC © Stanislav Parsov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -203,7 +203,7 @@ class TransactionProcessor:
             # this future.
             LOGGER.debug('TransactionProcessor: CancelledError')
             return
-        LOGGER.debug('TransactionProcessor: _process_future msg=%s',str(msg))
+        #LOGGER.debug('TransactionProcessor: _process_future msg=%s',str(msg))
         if msg is RECONNECT_EVENT:
             if sigint is False:
                 LOGGER.info("reregistering with validator")

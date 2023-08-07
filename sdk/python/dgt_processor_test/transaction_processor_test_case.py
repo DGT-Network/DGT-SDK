@@ -1,5 +1,4 @@
-# Copyright 2019 NTRLab
-#
+# Copyright DGT NETWORK INC © Stanislav Parsov
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -16,7 +15,7 @@
 import os
 import unittest
 
-from dgt_processor_test.mock_validator import MockValidator
+fro dgt_processor_test.mock_validator import MockValidator
 
 
 class TransactionProcessorTestCase(unittest.TestCase):

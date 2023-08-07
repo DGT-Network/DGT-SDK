@@ -1,4 +1,4 @@
-# Copyright 2020 NTRLab
+# Copyright 2017 DGT NETWORK INC © Stanislav Parsov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -129,7 +129,7 @@ def get_log_dir():
         toml_config_setting='log_dir',
         sawtooth_home_dir='logs',
         windows_dir='logs',
-        default_dir='/var/log/sawtooth')
+        default_dir='/project/peer/logs')
 
 
 def get_log_config(filename=None):

@@ -1,4 +1,4 @@
-# Copyright 2019 NTRLab
+# Copyright 2016, 2017 DGT NETWORK INC © Stanislav Parsov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,11 +24,14 @@ from dgt_signing.core import ParseError
 from dgt_signing.core import PrivateKey
 from dgt_signing.core import PublicKey
 from dgt_signing.core import Context
-
-__CONTEXTBASE__ = secp256k1.Base(ctx=None, flags=secp256k1.ALL_FLAGS)
-__CTX__ = __CONTEXTBASE__.ctx
-__PK__ = secp256k1.PublicKey(ctx=__CTX__)  # Cache object to use as factory
-
+import logging
+try:
+    __CONTEXTBASE__ = secp256k1.Base(ctx=None, flags=secp256k1.ALL_FLAGS)
+    __CTX__ = __CONTEXTBASE__.ctx
+    __PK__ = secp256k1.PublicKey(ctx=__CTX__)  # Cache object to use as factory
+except Exception as ex:
+    __CTX__ = None
+    __PK__  = None
 
 class Secp256k1PrivateKey(PrivateKey):
     def __init__(self, secp256k1_private_key):
@@ -48,12 +51,17 @@ class Secp256k1PrivateKey(PrivateKey):
         return self._private_key
 
     @staticmethod
+    def from_wif(hex_str):
+        raise ParseError(f'Unable to parse hex private key: {hex_str}')
+
+    @staticmethod
     def from_hex(hex_str):
         try:
             priv = binascii.unhexlify(hex_str)
+            logging.info(f"Secp256k1PrivateKey.from_hex: hex={hex_str} serialized={priv}")
             return Secp256k1PrivateKey(secp256k1.PrivateKey(priv, ctx=__CTX__))
         except Exception as e:
-            raise ParseError('Unable to parse hex private key: {}'.format(e))
+            raise ParseError(f'Unable to parse hex private key={hex_str}: {e}')
 
     @staticmethod
     def new_random():
@@ -100,8 +108,7 @@ class Secp256k1Context(Context):
     def sign(self, message, private_key):
         try:
             signature = private_key.secp256k1_private_key.ecdsa_sign(message)
-            signature = private_key.secp256k1_private_key \
-                .ecdsa_serialize_compact(signature)
+            signature = private_key.secp256k1_private_key.ecdsa_serialize_compact(signature)
 
             return signature.hex()
         except Exception as e:
@@ -120,5 +127,25 @@ class Secp256k1Context(Context):
     def new_random_private_key(self):
         return Secp256k1PrivateKey.new_random()
 
+    def new_random(self):           
+        return Secp256k1PrivateKey.new_random() 
+
     def get_public_key(self, private_key):
         return Secp256k1PublicKey(private_key.secp256k1_private_key.pubkey)
+
+    def from_hex(self,hex_str):
+        return Secp256k1PrivateKey.from_hex(hex_str)
+
+    def from_wif(self,hex_str):
+        return Secp256k1PrivateKey.from_wif(hex_str)
+
+    def pub_from_hex(self,hex_str):
+        return Secp256k1PublicKey.from_hex(hex_str)
+
+    def create_x509_certificate(self,subject_info,priv,after=None,before=None):
+        return self.sign(b'xxxxxx',priv).encode('utf-8')
+
+    def load_x509_certificate(self,cert_pem):                                            
+        xcert = {}
+        
+        return xcert                                                                     

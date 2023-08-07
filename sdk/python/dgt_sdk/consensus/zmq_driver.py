@@ -1,4 +1,4 @@
-# Copyright 2020 NTRLab
+# Copyright 2018 DGT NETWORK INC © Stanislav Parsov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ class ZmqDriver(Driver):
         self._stream = None
         self._exit = False
         self._updates = None
+        self._signed_consensus = self._engine.signed_consensus
 
     def start(self, endpoint):
         LOGGER.debug('ZmqDriver: start endpoint=%s',endpoint)
@@ -133,7 +134,7 @@ class ZmqDriver(Driver):
             notification = consensus_pb2.ConsensusNotifyPeerConnected()
             notification.ParseFromString(message.content)
 
-            data = notification.peer_info, notification.status, notification.mode , notification.info
+            data = notification.peer_info, notification.status, notification.mode , notification.info, notification.data
 
         elif type_tag == Message.CONSENSUS_NOTIFY_PEER_DISCONNECTED:
             notification = consensus_pb2.ConsensusNotifyPeerDisconnected()
@@ -142,7 +143,7 @@ class ZmqDriver(Driver):
             data = notification.peer_id
 
         elif type_tag == Message.CONSENSUS_NOTIFY_PEER_MESSAGE:
-            notification = consensus_pb2.ConsensusNotifyPeerMessage()
+            notification = consensus_pb2.ConsensusNotifyPeerMessageNew() if self._signed_consensus else consensus_pb2.ConsensusNotifyPeerMessage()
             notification.ParseFromString(message.content)
 
             data = notification.message, notification.sender_id

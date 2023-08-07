@@ -1,4 +1,4 @@
-# Copyright 2019 NTRLab
+# Copyright 2017 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='sawtooth-signing',
+    name='dgt-signing',
     version=subprocess.check_output(
         ['../bin/get_version']).decode('utf-8').strip(),
     description='Dgt Signing Library',
-    author='Hyperledger Sawtooth-Dgt',
+    author='Hyperledger Sawtooth',
     url='https://github.com/hyperledger/sawtooth-core',
     packages=find_packages(),
     install_requires=[

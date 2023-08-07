@@ -1,4 +1,4 @@
-# Copyright 2019 NTRLab
+# Copyright 2019 DGT NETWORK INC © Stanislav Parsov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ class ReceiveError(Exception):
 class UnknownBlock(Exception):
     pass
 
+class BlockIsProcessedNow(Exception):  
+    pass                        
 
 class UnknownPeer(Exception):
     pass
