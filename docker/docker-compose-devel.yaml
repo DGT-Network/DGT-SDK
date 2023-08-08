@@ -43,7 +43,7 @@ services:
       bash -c "
         bin/protogen
         #echo TOP=${DGT_TOP} 
-        #dgtadm keygen --force ;ls -l /root/.dgt/keys &&
+        dgt keygen --force ;ls -l /root/.dgt/keys &&
         tail -f /dev/null
       "
     stop_signal: SIGKILL
@@ -52,11 +52,6 @@ services:
 
 networks:
   network1:
-     #external: true
      name: ${PNM}1-network
-#name: ${PNM}${N}-network
-#        driver: default
-#        config:
-#          - subnet: "172.16.32.0/24"
-          
+         
   

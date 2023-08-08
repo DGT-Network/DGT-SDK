@@ -47,28 +47,18 @@ def main(args=None):
     print('protogen TOP_DIR=',TOP_DIR) 
     proto_dir = JOIN(TOP_DIR, "protos/common")
     protoc(proto_dir, "sdk/python", "dgt_sdk/protobuf")
-    #protoc(proto_dir, "validator", "dgt_validator/protobuf")
-    #protoc(proto_dir, "consensus/dgt_pbft", "pbft_common/protobuf")
-    #protoc(proto_dir, "cli", "dgt_cli/protobuf")
-    #protoc(proto_dir, "rest-api", "dgt_rest_api/protobuf")
-    #protoc(proto_dir, "dashboard", "dgt_rest_api/protobuf")
-    #protoc(proto_dir, "families/settings", "dgt_settings/protobuf")
 
     # Generate config protos dgt setting
-    if False:
-        proto_dir = JOIN(TOP_DIR, "families/settings/protos")
+    if True:
+        proto_dir = JOIN(TOP_DIR, "protos/families/settings/protos")
         print('protogen FROM=',proto_dir)
-        protoc(proto_dir, "families/settings", "dgt_settings/protobuf")
         protoc(proto_dir, "sdk/python", "dgt_sdk/protobuf")
 
     
 
     # Generate identity protos
-    if False:
-        proto_dir = JOIN(TOP_DIR, "families/identity/protos")
-        #protoc(proto_dir, "families/identity", "sawtooth_identity/protobuf")
-        #protoc(proto_dir, "cli", "sawtooth_cli/protobuf")
-        protoc(proto_dir, "cli", "dgt_cli/protobuf")
+    if True:
+        proto_dir = JOIN(TOP_DIR, "protos/families/identity/protos")
         protoc(proto_dir, "sdk/python", "dgt_sdk/protobuf")
 
     if False:
