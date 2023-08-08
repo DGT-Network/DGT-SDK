@@ -50,7 +50,7 @@ def parse_args(args):
     parser.add_argument(
         '-V', '--version',
         action='version',
-        version=(DISTRIBUTION_NAME + ' (Hyperledger Sawtooth) version {}')
+        version=(DISTRIBUTION_NAME + ' (Hyperledger dgt) version {}')
         .format(version),
         help='print version information')
 
@@ -63,6 +63,7 @@ def main(args=None):
     opts = parse_args(args)
     processor = None
     try:
+        print("CONNECT TO {}".format(opts.connect))
         processor = TransactionProcessor(url=opts.connect)
         log_config = get_log_config(filename="intkey_log_config.toml")
 
@@ -83,6 +84,7 @@ def main(args=None):
 
         # The prefix should eventually be looked up from the
         # validator's namespace registry.
+        
         handler = IntkeyTransactionHandler()
 
         processor.add_handler(handler)
