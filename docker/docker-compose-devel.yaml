@@ -30,18 +30,19 @@ services:
     networks:
     - network1
     environment:
-    - DGT_HOME=/project/${DGT_TOP}/clusters/${C}/${PNM}${N}
+    - DGT_HOME=/project/peer
     - PEER_HOME=/project/peer
     - CRYPTO_BACK=${CRYPTO_BACK}
     - DGT_TOP=${DGT_TOP}
     - HTTPS_MODE=${HTTPS_MODE}
     volumes:
       - ..:/project/${DGT_TOP}
-      - ../../${PNM}_devel/python_test:/project/peer
-    container_name: python-sdk-${PNM}
+      - ../../${PNM}-devel/python-devel:/project/peer
+    container_name: python-sdk-${PNM}-${PEER}
     command: |
       bash -c "
-        dgt keygen --force ;ls -l /root/.dgt/keys &&
+        echo TOP=${DGT_TOP} 
+        #dgtadm keygen --force ;ls -l /root/.dgt/keys &&
         tail -f /dev/null
       "
     stop_signal: SIGKILL
