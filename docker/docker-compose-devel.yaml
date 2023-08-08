@@ -30,7 +30,7 @@ services:
     networks:
     - network1
     environment:
-    - DGT_HOME=/project/peer
+    - DGT_HOME=/project/${DGT_TOP}
     - PEER_HOME=/project/peer
     - CRYPTO_BACK=${CRYPTO_BACK}
     - DGT_TOP=${DGT_TOP}
@@ -41,7 +41,8 @@ services:
     container_name: python-sdk-${PNM}-${PEER}
     command: |
       bash -c "
-        echo TOP=${DGT_TOP} 
+        bin/protogen
+        #echo TOP=${DGT_TOP} 
         #dgtadm keygen --force ;ls -l /root/.dgt/keys &&
         tail -f /dev/null
       "
