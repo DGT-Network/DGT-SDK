@@ -60,6 +60,8 @@ def main(args=None):
     if True:
         proto_dir = JOIN(TOP_DIR, "protos/families/identity/protos")
         protoc(proto_dir, "sdk/python", "dgt_sdk/protobuf")
+        proto_dir = JOIN(TOP_DIR, "protos/families/smart_stuff")            
+        protoc(proto_dir, "examples_python/smart_stuff", "stuff_common/protobuf")  
 
     if False:
         # Generate Smart BGT token  protos
