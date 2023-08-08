@@ -19,9 +19,9 @@ import hashlib
 import cbor
 
 
-from sawtooth_sdk.processor.handler import TransactionHandler
-from sawtooth_sdk.processor.exceptions import InvalidTransaction
-from sawtooth_sdk.processor.exceptions import InternalError
+from dgt_sdk.processor.handler import TransactionHandler
+from dgt_sdk.processor.exceptions import InvalidTransaction
+from dgt_sdk.processor.exceptions import InternalError
 
 
 LOGGER = logging.getLogger(__name__)
