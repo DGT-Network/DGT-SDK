@@ -40,10 +40,10 @@ from dgt_intkey.client_cli.exceptions import IntkeyClientException
 
 
 DISTRIBUTION_NAME = 'dgt-intkey'
-
+CRYPTO_BACK = os.environ.get('CRYPTO_BACK',"openssl") 
 
 DEFAULT_URL = 'http://127.0.0.1:8008'
-
+DGT_API_URL = 'https://api-dgt-c1-1:8108' if os.environ.get('HTTPS_MODE') == '--http_ssl' else 'http://api-dgt-c1-1:8108'
 
 def create_console_handler(verbose_level):
     clog = logging.StreamHandler()
@@ -96,6 +96,16 @@ def create_parent_parser(prog_name):
         version=(DISTRIBUTION_NAME + ' (Hyperledger Sawtooth) version {}')
         .format(version),
         help='display version information')
+    parent_parser.add_argument(                                
+        '-cb', '--crypto_back',                                
+        type=str,                                              
+        choices=["openssl","bitcoin"] ,                        
+        help='Specify a crypto back openssl/bitcoin',          
+        default=CRYPTO_BACK                                    
+        )                                                      
+
+
+
 
     return parent_parser
 
@@ -308,8 +318,9 @@ def do_list(args):
 
 def _get_client(args):
     return IntkeyClient(
-        url=DEFAULT_URL if args.url is None else args.url,
-        keyfile=_get_keyfile(args))
+        url=DGT_API_URL if args.url is None else args.url,
+        keyfile=_get_keyfile(args),
+        backend=args.crypto_back)
 
 
 def _get_keyfile(args):
@@ -321,7 +332,7 @@ def _get_keyfile(args):
 
     real_user = getpass.getuser()
     home = os.path.expanduser("~")
-    key_dir = os.path.join(home, ".sawtooth", "keys")
+    key_dir = os.path.join(home, ".dgt", "keys")
 
     return '{}/{}.priv'.format(key_dir, real_user)
 

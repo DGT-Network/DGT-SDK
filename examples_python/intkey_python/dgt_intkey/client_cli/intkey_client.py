@@ -24,7 +24,7 @@ import cbor
 from dgt_signing import create_context
 from dgt_signing import CryptoFactory
 from dgt_signing import ParseError
-from dgt_signing.secp256k1 import Secp256k1PrivateKey
+#from dgt_signing.secp256k1 import Secp256k1PrivateKey
 
 from dgt_sdk.protobuf.transaction_pb2 import TransactionHeader
 from dgt_sdk.protobuf.transaction_pb2 import Transaction
@@ -40,7 +40,7 @@ def _sha512(data):
 
 
 class IntkeyClient:
-    def __init__(self, url, keyfile=None):
+    def __init__(self, url, keyfile=None,backend="openssl"):
         self.url = url
 
         if keyfile is not None:
@@ -51,15 +51,15 @@ class IntkeyClient:
             except OSError as err:
                 raise IntkeyClientException(
                     'Failed to read private key: {}'.format(str(err)))
-
+            context = create_context('secp256k1',backend)
             try:
-                private_key = Secp256k1PrivateKey.from_hex(private_key_str)
+                
+                private_key = context.from_hex(private_key_str)
             except ParseError as e:
                 raise IntkeyClientException(
                     'Unable to load private key: {}'.format(str(e)))
 
-            self._signer = CryptoFactory(
-                create_context('secp256k1')).new_signer(private_key)
+            self._signer = CryptoFactory(context).new_signer(private_key)
 
     def set(self, name, value, wait=None):
         return self._send_transaction('set', name, value, wait=wait)

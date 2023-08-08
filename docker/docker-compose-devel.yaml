@@ -41,7 +41,8 @@ services:
     container_name: python-sdk-${PNM}-${PEER}
     command: |
       bash -c "
-        bin/protogen
+        bin/protogen;mkdir /project/peer/keys ;mkdir /project/peer/logs
+        cr_cert.sh /project/peer/keys/http_srv.crt /project/peer/keys/http_srv.key;rm -f /project/peer/logs/*.log*
         #echo TOP=${DGT_TOP} 
         dgt keygen --force ;ls -l /root/.dgt/keys &&
         tail -f /dev/null
