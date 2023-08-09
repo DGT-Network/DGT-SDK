@@ -1,4 +1,4 @@
-![Sawtooth=DGT](bgx/images/dgt-logo.png)
+![DGT](images/logo-dgt.png)
 
 DGT SDK
 -------------
