@@ -287,16 +287,12 @@ function doDevelCompose {
    
    if test -f $DEVEL_FCOMP; then 
        eval PEER=\$PEER_${SNM^^}                                              
-                                                           
-       eval CLUST=\$CLUST_${SNM^^}                                                
-       eval NODE=\$NODE_${SNM^^}                                                
        eval SIGNED=\$SIGNED_${SNM^^}
        eval PNM=\$PNM_${SNM^^}
        eval CRYPTO_BACK=\$CRYPTO_BACK_${SNM^^}
        eval HTTPS_MODE=\$HTTPS_MODE_${SNM^^}
        eval ACCESS_TOKEN=\$ACCESS_TOKEN_${SNM^^}
-       eval API=\$API_${SNM^^}
-       eval COMP=\$COMP_${SNM^^}
+       
 
                                              
  
@@ -898,15 +894,21 @@ function doDecDgt {
 
 }
 function doDgtDgt {
-    
-    eval CLUST=\$CLUST_${SNM^^}
-    eval NODE=\$NODE_${SNM^^}
-    if [ -z ${CLUST} ] || [ -z ${NODE} ];then   
-      echo -e $CRED "UDEFINED PEER '$SNM' " $CDEF        
-      return
+local container_name=""
+    if [[ $LNAME == "DEVEL_LIST" ]] ; then
+      eval PEER=\$PEER_${SNM^^}
+      container_name="python-sdk-dgt-${PEER}"
+    else
+       eval CLUST=\$CLUST_${SNM^^}
+       eval NODE=\$NODE_${SNM^^}
+       if [ -z ${CLUST} ] || [ -z ${NODE} ];then   
+         echo -e $CRED "UDEFINED PEER '$SNM' " $CDEF        
+         return
+       fi
+       container_name="shell-dgt-${CLUST}-${NODE}"
     fi
     if [[ $1 != "" ]]; then
-       local container_name="shell-dgt-${CLUST}-${NODE}"
+       
        doDockerCmd $container_name $@
     else 
        echo -e $CBLUE "usage:<dgt util name> [<args>]" $CDEF
