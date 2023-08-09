@@ -17,7 +17,8 @@
 /.idea/
 /**/.idea/
 *.sublime*
-
+__pycache__/
+protobuf/
 /bgx/rest-api/web_app_node/node_modules/
 
 # Everything else
