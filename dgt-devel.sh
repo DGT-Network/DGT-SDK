@@ -26,6 +26,7 @@ declare -A DEF_PARAMS=(
 [ENDPOINTS]=""
 [SEEDS]=""
 [COMP_URL]="tcp://validator-dgt-c1-1:4104"
+
 )
 #FCOMPOSE="docker-compose-netCN-dgt-dec-ci.yaml"
 #DGT_PARAM_LIST=${DGT_PARAMS[@]} #(PEER CLUST NODE GENESIS SINGLE PCONTROL PEERING NETWORK METRIC SIGNED INFLUXDB DBHOST DBUSER DBPASS PNM KYC CRYPTO_BACK HTTPS_MODE ACCESS_TOKEN)
@@ -112,7 +113,7 @@ if [ ! -v DGT_DASH_PARAMS ]; then
 DGT_DASH_PARAMS=(PEER CLUST NODE COMP API SIGNED PNM CRYPTO_BACK HTTPS_MODE ACCESS_TOKEN)
 fi
 if [ ! -v DGT_DEVEL_PARAMS ]; then
-DGT_DEVEL_PARAMS=(PEER PNM CRYPTO_BACK HTTPS_MODE ACCESS_TOKEN DGT_TOKEN COMP_URL)
+DGT_DEVEL_PARAMS=(PEER PNM CRYPTO_BACK HTTPS_MODE ACCESS_TOKEN DGT_TOKEN COMP_URL API)
 fi
 
 if [ ! -v PARAMS_HELP ]; then
@@ -155,7 +156,7 @@ declare -A PARAMS_HELP=(
     [USER_NOTARY]="User notary name:--user-notary <user>"
     [NREST]="Notary rest-api mode: ON/OFF"
     [BON]="Teler bot mode: -bon/"
-    [COMP_URL]="Url for component connect: http://validator-dgt-c1-1:4104"
+    [COMP_URL]="Url for component connect: tcp://validator-dgt-c1-1:4104"
 )
 fi
 
@@ -292,10 +293,10 @@ function doDevelCompose {
        declare -A params=()  
        doPeerParams params   
                                              
- 
+        BIND_API="python-sdk-${params[PNM]}-${params[PEER]}:${params[API]}"
         #export COMPOSE_PROJECT_NAME=1 G=$GENESIS C=c1 N=1 API=8108 COMP=4104 NET=8101 CONS=5051;docker-compose -f docker/$FCOMPOSE $mode
         export COMPOSE_PROJECT_NAME=$SNM   \
-               SIGNED=${params["SIGNED"]} PEER=${params["PEER"]} ACCESS_TOKEN=${params["ACCESS_TOKEN"]} \
+               SIGNED=${params["SIGNED"]} PEER=${params["PEER"]} ACCESS_TOKEN=${params["ACCESS_TOKEN"]} BIND_API=$BIND_API \
                PNM=${params["PNM"]} CRYPTO_BACK=${params["CRYPTO_BACK"]}  HTTPS_MODE=${params["HTTPS_MODE"]} COMP_URL=${params["COMP_URL"]}; \
                $COMPOSE -f $DEVEL_FCOMP $CMD $@;                           
        
@@ -517,7 +518,7 @@ function updateEnvParam {
    fi
  else
   # new params
-  after_par="NODE_${SNM^^}" 
+  after_par="PEER_${SNM^^}" 
   sed -i "/$after_par=.*/a $1=$3"  $FILE_ENV
                                   
  fi                                  

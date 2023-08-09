@@ -47,7 +47,7 @@ from dgt_rest_api.config import RestApiConfig
 import cbor
 from dgt_sdk.oauth.endpoints import oauth_middleware,AioHttpOAuth2Server,OAuth2_RequestValidator,setup_oauth,AUTH_SCOPE_LIST,AUTH_USER_LIST,AUTH_CONFIG_NM
 from oauthlib import oauth2
-from dgt_validator.database.indexed_database import IndexedDatabase
+#from dgt_validator.database.indexed_database import IndexedDatabase
 
 TOKEN_DB_FILENAME = '/project/peer/data/tokens.lmdb'
 DEFAULT_DB_SIZE= 1024*1024*1
@@ -222,8 +222,8 @@ def start_rest_api(host, port, connection,handler,subscriber_handler,# connectio
 
     #app.router.add_get('/gates', handler.fetch_gates)
     #ADD TP FAMILY handlers
-    app.router.add_get('/tx_families', handler.tx_families)                           
-    app.router.add_get('/run', handler.run_transaction)                               
+    #app.router.add_get('/tx_families', handler.tx_families)                           
+    #app.router.add_get('/run', handler.run_transaction)                               
     #app.router.add_get('/run_statuses',handler.list_statuses)  
 
 
