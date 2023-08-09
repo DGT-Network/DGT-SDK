@@ -1,28 +1,18 @@
-![Sawtooth=DGT](bgx/images/dgt-logo.png)
+![DGT](bgx/images/logo-dgt.png)
 
 Hyperledger DGT SDK
 -------------
 
-Hyperledger Sawtooth-BGX is an enterprise solution for building, deploying, and
+DGT is an enterprise solution for building, deploying, and
 running distributed ledgers (also called blockchains). It provides an extremely
 modular and flexible platform for implementing transaction-based updates to
 shared state between untrusted parties coordinated by consensus algorithms.
 
 .
-# install befor start validator
-# git clone http://gitlab.ntrlab.ru:83/ntrlab/bgx.git
-# sudo apt install docker
-# sudo apt install docker.io
-# sudo apt install docker-compose
-# sudo usermod -aG docker dgt
-# sudo apt-get install curl
-# sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-# sudo chmod +x /usr/local/bin/docker-compose
-# composer 
-# sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+# install DGT node
 
-#start TP 
-bash upTproc.sh 1 1
+#start devel 
+
 #stop TO 
 bash downTproc.sh 1 1
 
