@@ -1,4 +1,4 @@
-# Copyright 2019 NTRLab
+# Copyright 2016, 2017 DGT NETWORK INC © Stanislav Parsov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
 
 import asyncio
 import re
+import os
+from subprocess import Popen,PIPE,STDOUT
+import io
+import time
 import logging
 import json
 import base64
@@ -109,6 +113,7 @@ class RouteHandler:
         self._connection = connection
         self._timeout = timeout
         if metrics_registry:
+            LOGGER.debug('USE  metrics_registry')
             self._post_batches_count = CounterWrapper(
                 metrics_registry.counter('post_batches_count'))
             self._post_batches_error = CounterWrapper(
@@ -136,7 +141,7 @@ class RouteHandler:
         """
         timer_ctx = self._post_batches_total_time.time()
         self._post_batches_count.inc()
-
+        LOGGER.debug('submit_batches..')
         # Parse request
         if request.headers['Content-Type'] != 'application/octet-stream':
             LOGGER.debug(
@@ -1119,7 +1124,7 @@ class RouteHandler:
         """Confirms a header_signature is 128 hex characters, raising an
         ApiError if not.
         """
-        if not re.fullmatch('[0-9a-f]{128}', resource_id):
+        if not re.fullmatch('[0-9a-f]{,148}', resource_id): # for bitcoin re.fullmatch('[0-9a-f]{128}'
             raise errors.InvalidResourceId(resource_id)
 
     @staticmethod

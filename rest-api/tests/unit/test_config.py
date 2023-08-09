@@ -17,9 +17,9 @@ import unittest
 import shutil
 import tempfile
 
-from sawtooth_rest_api.config import load_default_rest_api_config
-from sawtooth_rest_api.config import load_toml_rest_api_config
-from sawtooth_rest_api.exceptions import RestApiConfigurationError
+from dgt_rest_api.config import load_default_rest_api_config
+from dgt_rest_api.config import load_toml_rest_api_config
+from dgt_rest_api.exceptions import RestApiConfigurationError
 
 
 class TestRestApiConfig(unittest.TestCase):

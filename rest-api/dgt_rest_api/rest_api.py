@@ -1,4 +1,4 @@
-# Copyright 2019 NTRLab
+# Copyright 2016 DGT NETWORK INC © Stanislav Parsov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ from urllib.parse import urlparse
 import platform
 import pkg_resources
 from aiohttp import web
+import ssl
 
 from zmq.asyncio import ZMQEventLoop
 from pyformance import MetricsRegistry
@@ -42,11 +43,30 @@ from dgt_rest_api.config import load_toml_rest_api_config
 from dgt_rest_api.config import merge_rest_api_config
 from dgt_rest_api.config import RestApiConfig
 
+# OAUTH mode
+import cbor
+from dgt_sdk.oauth.endpoints import oauth_middleware,AioHttpOAuth2Server,OAuth2_RequestValidator,setup_oauth,AUTH_SCOPE_LIST,AUTH_USER_LIST,AUTH_CONFIG_NM
+from oauthlib import oauth2
+from dgt_validator.database.indexed_database import IndexedDatabase
+
+TOKEN_DB_FILENAME = '/project/peer/data/tokens.lmdb'
+DEFAULT_DB_SIZE= 1024*1024*1
+
+def deserialize_data(encoded):                
+    return cbor.loads(encoded)                
+
+
+def serialize_data(value):                    
+    return cbor.dumps(value, sort_keys=True)  
+
+
+
+
 
 LOGGER = logging.getLogger(__name__)
 DISTRIBUTION_NAME = 'dgt-rest-api'
-
-
+HTTPS_SRV_KEY = '/project/peer/keys/http_srv.key'  
+HTTPS_SRV_CERT = '/project/peer/keys/http_srv.crt' 
 def parse_args(args):
     """Parse command line flags added to `rest_api` command.
     """
@@ -70,12 +90,28 @@ def parse_args(args):
                         action='count',
                         default=0,
                         help='enable more verbose output to stderr')
+
+    parser.add_argument('-hssl', '--http_ssl',        
+                        action='count',               
+                        default=0,                    
+                        help='enable https mode')  
+    
+    parser.add_argument('-atok', '--access_token',          
+                        action='count',                 
+                        default=0,                      
+                        help='enable token mode')
+    parser.add_argument('--oauth_conf','-aconf',                   
+                        help='OAuth config ', 
+                        default="/project/dgt/etc/{}".format(AUTH_CONFIG_NM),
+                        type=str)                               
+       
+
     parser.add_argument('--opentsdb-url',
                         help='specify host and port for Open TSDB database \
                         used for metrics')
     parser.add_argument('--opentsdb-url-off',
-                        help='specify host and port for Open TSDB database \
-                        used for metrics')
+                        help='Switch off using metrics',                
+                        type=str)
     parser.add_argument('--opentsdb-db',
                         help='specify name of database for storing metrics')
     parser.add_argument('--opentsdb-username',
@@ -97,19 +133,63 @@ def parse_args(args):
 
     return parser.parse_args(args)
 
+def add_oauth_middl(app,oauth_conf):
+    # add oauth mode 
+    async def generate_token(request :web.Request) -> web.Response:       
+        # token for access                      
+        print('generate_token')                                           
 
-def start_rest_api(host, port, connection, timeout, registry,
-                   client_max_size=None):
+
+
+    token_db = IndexedDatabase(                                                           
+            TOKEN_DB_FILENAME,                                                            
+            serialize_data,                                                               
+            deserialize_data,                                                             
+            indexes={'client': lambda dict: [dict['client'].encode()]},                   
+            flag='c',                                                                     
+            _size=DEFAULT_DB_SIZE,                                                        
+            dupsort=True                                                                  
+            )  
+    user_validator = OAuth2_RequestValidator(db=token_db,conf="/project/dgt/etc/{}".format(AUTH_CONFIG_NM))                                                                          
+    req_validator = oauth2.LegacyApplicationServer(user_validator,token_expires_in=user_validator.token_expires_in)                          
+    auth = AioHttpOAuth2Server(req_validator,user_validator)                                                                                                                                                               
+    setup_oauth(app,auth) 
+                                                                                                                                                                                      
+    app.router.add_post('/token',generate_token)
+    app.middlewares.append(oauth_middleware)
+    LOGGER.info('ADD TOKEN  CONTROL OK' )
+
+
+
+def start_rest_api(host, port, connection,handler,subscriber_handler,# connection, timeout, registry,
+                   client_max_size=None,http_ssl=False,
+                   access_token=False,oauth_conf=None):
     """Builds the web app, adds route handlers, and finally starts the app.
     """
-    loop = asyncio.get_event_loop()
-    connection.open()
-    app = web.Application(loop=loop, client_max_size=client_max_size)
+    runners = []                                                      
+    async def start_site(app,ssl_context):                                        
+        runner = web.AppRunner(app)                                   
+        runners.append(runner)                                        
+        await runner.setup()                                          
+        site = web.TCPSite(runner, host, port,ssl_context=ssl_context)                        
+        await site.start()                                            
+                                                                      
+    async def stop_site(loop):                                        
+        for runner in runners:                                        
+            await loop.run_until_complete(runner.cleanup()) 
+                      
+    #loop = asyncio.get_event_loop()
+    #connection.open()
+    app = web.Application(#loop=loop,
+                           client_max_size=client_max_size)
     app.on_cleanup.append(lambda app: connection.close())
-
+    if access_token and oauth_conf:
+        # add token control
+        add_oauth_middl(app,oauth_conf)
+        
     # Add routes to the web app
-    handler = DgtRouteHandler(loop, connection, timeout, registry)
-    LOGGER.info('Creating handlers for validator at %s', connection.url)
+    #handler = DgtRouteHandler(loop, connection, timeout, registry)
+    #LOGGER.info('Creating handlers for validator at %s', connection.url)
 
     app.router.add_post('/batches', handler.submit_batches)
     app.router.add_get('/batch_statuses', handler.list_statuses)
@@ -134,10 +214,18 @@ def start_rest_api(host, port, connection, timeout, registry,
     app.router.add_get('/nodes', handler.fetch_nodes) # just for testing
     app.router.add_get('/status', handler.fetch_status)
 
-    # ADD BGX handlers
+    # ADD DGT handlers
     app.router.add_get('/dag', handler.list_dag)
     app.router.add_get('/dag/{head_id}', handler.fetch_dag)
+    #app.router.add_get('/graph', handler.fetch_dag_graph)
     app.router.add_get('/topology', handler.fetch_topology)
+
+    #app.router.add_get('/gates', handler.fetch_gates)
+    #ADD TP FAMILY handlers
+    app.router.add_get('/tx_families', handler.tx_families)                           
+    app.router.add_get('/run', handler.run_transaction)                               
+    #app.router.add_get('/run_statuses',handler.list_statuses)  
+
 
     app.router.add_post('/transactions', handler.post_transfer)
     app.router.add_get('/wallets/{address}', handler.get_wallet)
@@ -151,14 +239,33 @@ def start_rest_api(host, port, connection, timeout, registry,
     app.on_shutdown.append(lambda app: subscriber_handler.on_shutdown())
 
     # Start app
-    LOGGER.info('Starting REST API on %s:%s', host, port)
+    LOGGER.info('Starting REST API on %s:%s HTTPS=%s TOKEN=%s', host, port,http_ssl,access_token )
+    if http_ssl:                                                                                    
+        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)                           
+        ssl_context.load_cert_chain(HTTPS_SRV_CERT, HTTPS_SRV_KEY)                                  
+    else:                                                                                           
+        ssl_context = None                                                                          
 
-    web.run_app(
+    if True:                                                                   
+        loop = asyncio.get_event_loop()                                        
+        loop.create_task(start_site(app,ssl_context))                                      
+        try:                                                                   
+            loop.run_forever()                                                 
+        except:                                                                
+            pass                                                               
+        finally:                                                               
+            #await stop_site(loop)                                             
+            for runner in runners:                                             
+                loop.run_until_complete(runner.cleanup())                      
+                                                                               
+    else:                                                                      
+        web.run_app(
         app,
         host=host,
         port=port,
         access_log=LOGGER,
-        access_log_format='%r: %s status, %b size, in %Tf s')
+        access_log_format='%r: %s status, %b size, in %Tf s'
+        ,ssl_context=ssl_context)
 
 
 def load_rest_api_config(first_config):
@@ -212,7 +319,7 @@ def main():
             url = rest_api_config.connect
 
         connection = Connection(url)
-
+        connection.open()
         log_config = get_log_config(filename="rest_api_log_config.toml")
 
         # If no toml, try loading yaml
@@ -223,7 +330,7 @@ def main():
             log_configuration(log_config=log_config)
         else:
             log_dir = get_log_dir()
-            log_configuration(log_dir=log_dir, name="dgt-rest-api")
+            log_configuration(log_dir=log_dir, name="rest-api")
         init_console_logging(verbose_level=opts.verbose)
 
         try:
@@ -256,13 +363,32 @@ def main():
                 password=rest_api_config.opentsdb_password)
             reporter.start()
 
+        # create handlers                                                                                                              
+        subscriber_handler = StateDeltaSubscriberHandler(connection)                                                                   
+        handler = DgtRouteHandler(loop,
+            connection,
+            int(rest_api_config.timeout),
+            wrapped_registry)
+        
+        LOGGER.info('Creating handlers for validator at %s', connection.url)                                                           
+        start_rest_api(                                                                                                                
+            host,                                                                                                                      
+            port,                                                                                                                      
+            connection,handler,subscriber_handler,# connection,int(rest_api_config.timeout),wrapped_registry,                          
+            client_max_size=rest_api_config.client_max_size,                                                                           
+            http_ssl=opts.http_ssl > 0,
+            access_token=opts.access_token >0,
+            oauth_conf=opts.oauth_conf)                                                                                                
+        """
         start_rest_api(
             host,
             port,
             connection,
             int(rest_api_config.timeout),
             wrapped_registry,
-            client_max_size=rest_api_config.client_max_size)
+            client_max_size=rest_api_config.client_max_size,
+            http_ssl=opts.http_ssl > 0)
+        """
         # pylint: disable=broad-except
     except Exception as e:
         LOGGER.exception(e)

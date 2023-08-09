@@ -18,10 +18,10 @@ from base64 import b64decode
 from aiohttp.test_utils import unittest_run_loop
 
 from components import Mocks, BaseApiTest
-from sawtooth_rest_api.protobuf.validator_pb2 import Message
-from sawtooth_rest_api.protobuf import client_state_pb2
-from sawtooth_rest_api.protobuf import client_block_pb2
-from sawtooth_rest_api.protobuf import block_pb2
+from dgt_rest_api.protobuf.validator_pb2 import Message
+from dgt_rest_api.protobuf import client_state_pb2
+from dgt_rest_api.protobuf import client_block_pb2
+from dgt_rest_api.protobuf import block_pb2
 
 
 ID_A = 'a' * 128
