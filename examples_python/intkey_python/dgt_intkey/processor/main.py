@@ -16,6 +16,7 @@
 import sys
 import argparse
 import pkg_resources
+import os
 
 from dgt_sdk.processor.core import TransactionProcessor
 from dgt_sdk.processor.log import init_console_logging
@@ -26,7 +27,7 @@ from dgt_intkey.processor.handler import IntkeyTransactionHandler
 
 
 DISTRIBUTION_NAME = 'dgt-intkey'
-
+DGT_COMP_URL = os.environ.get('COMP_URL','http://validator-dgt-c1-1:4104') 
 
 def parse_args(args):
     parser = argparse.ArgumentParser(
@@ -34,7 +35,7 @@ def parse_args(args):
 
     parser.add_argument(
         '-C', '--connect',
-        default='tcp://localhost:4004',
+        default=DGT_COMP_URL,
         help='Endpoint for the validator connection')
 
     parser.add_argument('-v', '--verbose',

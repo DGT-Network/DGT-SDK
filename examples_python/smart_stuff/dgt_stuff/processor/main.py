@@ -14,6 +14,7 @@
 # ------------------------------------------------------------------------------
 
 import sys
+import os
 import argparse
 import pkg_resources
 import logging
@@ -29,7 +30,7 @@ from dgt_stuff.processor.handler import StuffTransactionHandler
 LOGGER = logging.getLogger(__name__)
 
 
-
+DGT_COMP_URL = os.environ.get('COMP_URL','http://validator-dgt-c1-1:4104') 
 
 DISTRIBUTION_NAME = 'dgt-stuff'
 
@@ -39,7 +40,7 @@ def parse_args(args):
 
     parser.add_argument(
         '-C', '--connect',
-        default='tcp://localhost:4004',
+        default=DGT_COMP_URL,
         help='Endpoint for the validator connection')
 
     parser.add_argument('-v', '--verbose',
