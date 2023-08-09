@@ -30,7 +30,7 @@ from dgt_stuff.processor.handler import StuffTransactionHandler
 LOGGER = logging.getLogger(__name__)
 
 
-DGT_COMP_URL = os.environ.get('COMP_URL','http://validator-dgt-c1-1:4104') 
+DGT_COMP_URL = os.environ.get('COMP_URL','tcp://validator-dgt-c1-1:4104') 
 
 DISTRIBUTION_NAME = 'dgt-stuff'
 

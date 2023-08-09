@@ -27,7 +27,7 @@ from dgt_intkey.processor.handler import IntkeyTransactionHandler
 
 
 DISTRIBUTION_NAME = 'dgt-intkey'
-DGT_COMP_URL = os.environ.get('COMP_URL','http://validator-dgt-c1-1:4104') 
+DGT_COMP_URL = os.environ.get('COMP_URL','tcp://validator-dgt-c1-1:4104') 
 
 def parse_args(args):
     parser = argparse.ArgumentParser(

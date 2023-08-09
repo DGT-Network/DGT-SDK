@@ -35,6 +35,7 @@ services:
     - CRYPTO_BACK=${CRYPTO_BACK}
     - DGT_TOP=${DGT_TOP}
     - HTTPS_MODE=${HTTPS_MODE}
+    - COMP_URL=${COMP_URL}
     volumes:
       - ..:/project/${DGT_TOP}
       - ../../${PNM}-devel/python-devel:/project/peer
