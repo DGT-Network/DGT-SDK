@@ -1,4 +1,4 @@
-![DGT](images/dgt-dgt.png)
+![DGT](images/logo-dgt.png)
 
 Hyperledger DGT SDK
 -------------
